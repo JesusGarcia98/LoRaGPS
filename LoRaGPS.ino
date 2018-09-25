@@ -2,8 +2,8 @@
 #include <Adafruit_GPS.h>
 #include <SoftwareSerial.h>
 
-const char *appEui = "7***************";
-const char *appKey = "******************************";
+const char *appEui = "****************";
+const char *appKey = "***************************";
 
 // Connect the GPS Power pin to 3.3V
 // Connect the GPS Ground pin to ground
@@ -25,11 +25,11 @@ void setup() {
   delay(5000);
   Serial.println("Adafruit GPS and LoRa!");
 
-  Serial.println("-- STATUS");
-  ttn.showStatus();
-
-  Serial.println("-- JOIN");
-  ttn.join(appEui, appKey);
+  //  Serial.println("-- STATUS");
+  //  ttn.showStatus();
+  //
+  //  Serial.println("-- JOIN");
+  //  ttn.join(appEui, appKey);
 
   GPS.begin(9600);
   GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
@@ -54,40 +54,40 @@ void loop() {
 
   if (timer > millis())  timer = millis();
 
-  if (millis() - timer > 10000) {
+  if (millis() - timer > 2000) {
     timer = millis();
 
     uint32_t gHour = GPS.hour; // Add 2 hours
     uint32_t gMonth = GPS.month;
     uint32_t gYear = GPS.year; // Add 2000 years
-    uint32_t gLat = GPS.latitude * 10000;
-    uint32_t gLon = GPS.longitude * 10000;
+    double gLat = GPS.latitudeDegrees * 1000000;
+    double gLon = GPS.longitudeDegrees * 1000000;
 
-    //        Serial.print("\nTime: ");
-    //        Serial.print(gHour); Serial.print(' ');
-    //        Serial.print("Date: ");
-    //        Serial.print(gMonth); Serial.print("/");
-    //        Serial.println(gYear);
+    Serial.print("\nTime: ");
+    Serial.print(gHour); Serial.print(' ');
+    Serial.print("Date: ");
+    Serial.print(gMonth); Serial.print("/");
+    Serial.println(gYear);
+
+    if (GPS.fix) {
+      Serial.print("Location: ");
+      Serial.print(gLat);
+      Serial.print(", ");
+      Serial.print(gLon);
+    }
+
+    //    byte payload[10];
+    //    payload[0] = highByte(gHour);
+    //    payload[1] = lowByte(gHour);
+    //    payload[2] = highByte(gMonth);
+    //    payload[3] = lowByte(gMonth);
+    //    payload[4] = highByte(gYear);
+    //    payload[5] = lowByte(gYear);
+    //    payload[6] = highByte(gLat);
+    //    payload[7] = lowByte(gLat);
+    //    payload[8] = highByte(gLon);
+    //    payload[9] = lowByte(gLon);
     //
-    //        if (GPS.fix) {
-    //          Serial.print("Location: ");
-    //          Serial.print(gLat); Serial.print(GPS.lat);
-    //          Serial.print(", ");
-    //          Serial.print(gLon); Serial.println(GPS.lon);
-    //        }
-
-    byte payload[10];
-    payload[0] = highByte(gHour);
-    payload[1] = lowByte(gHour);
-    payload[2] = highByte(gMonth);
-    payload[3] = lowByte(gMonth);
-    payload[4] = highByte(gYear);
-    payload[5] = lowByte(gYear);
-    payload[6] = highByte(gLat);
-    payload[7] = lowByte(gLat);
-    payload[8] = highByte(gLon);
-    payload[9] = lowByte(gLon);
-
-    ttn.sendBytes(payload, sizeof(payload));
+    //    ttn.sendBytes(payload, sizeof(payload));
   }
 }
