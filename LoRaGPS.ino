@@ -2,8 +2,8 @@
 #include <Adafruit_GPS.h>
 #include <SoftwareSerial.h>
 
-const char *appEui = "70B3D57ED0012664";
-const char *appKey = "002655E108E889868E6CBCB4047F3AFE";
+const char *appEui = "7***************";
+const char *appKey = "******************************";
 
 // Connect the GPS Power pin to 3.3V
 // Connect the GPS Ground pin to ground
